@@ -964,54 +964,86 @@ class Game:
         self.item_spawn_timer = 0
 
     # -----------------------------------------------------------------------
-    # 2. WELCOME SCREEN
+    # 2. WELCOME SCREEN (Clean, calm aesthetic with comfortable padding)
     # -----------------------------------------------------------------------
     def draw_welcome_screen(self):
         self.starfield.draw(self.screen)
 
-        # Title Banner
-        title_surf = self.font_title.render("THE MIDNIGHT GOSPEL", True, COLOR_PINK)
-        sub_surf = self.font_heading.render("CLANCY VS PRINCE JAM ROLL (EPISODE 4)", True, COLOR_CYAN)
-        self.screen.blit(title_surf, (SCREEN_WIDTH // 2 - title_surf.get_width() // 2, 45))
-        self.screen.blit(sub_surf, (SCREEN_WIDTH // 2 - sub_surf.get_width() // 2, 88))
+        # Title Banner - Soft glowing cosmic typography
+        title_text = "THE MIDNIGHT GOSPEL"
+        title_glow = self.font_title.render(title_text, True, (80, 40, 110))
+        title_surf = self.font_title.render(title_text, True, (245, 175, 235))
+        sub_surf = self.font_heading.render("CLANCY VS PRINCE JAM ROLL  •  EPISODE 4", True, (140, 215, 245))
 
-        # Clancy Pilot Showcase in Purple with Heart Arrow & Shoes
+        t_x = SCREEN_WIDTH // 2 - title_surf.get_width() // 2
+        self.screen.blit(title_glow, (t_x + 2, 42))
+        self.screen.blit(title_surf, (t_x, 40))
+        self.screen.blit(sub_surf, (SCREEN_WIDTH // 2 - sub_surf.get_width() // 2, 84))
+
+        # Clancy Pilot Showcase with soft ethereal halo
         center_x = SCREEN_WIDTH // 2
-        center_y = 175
-        pygame.draw.circle(self.screen, (35, 15, 60), (center_x, center_y), 45)
-        pygame.draw.circle(self.screen, CLANCY_PURPLE, (center_x, center_y), 45, width=2)
+        center_y = 166
+
+        aura_surf = pygame.Surface((110, 110), pygame.SRCALPHA)
+        pygame.draw.circle(aura_surf, (140, 70, 210, 35), (55, 55), 48)
+        pygame.draw.circle(aura_surf, (30, 20, 50, 220), (55, 55), 40)
+        pygame.draw.circle(aura_surf, (175, 110, 235, 160), (55, 55), 40, width=2)
+        self.screen.blit(aura_surf, (center_x - 55, center_y - 55))
+
         demo_clancy = Player(center_x, center_y + 2)
         demo_clancy.draw(self.screen)
 
-        clancy_lbl = self.font_body.render("PILOT: CLANCY GILROY • SHOOTING HEART ARROWS", True, CLANCY_GLOW)
-        self.screen.blit(clancy_lbl, (center_x - clancy_lbl.get_width() // 2, center_y + 52))
+        clancy_lbl = self.font_body.render("PILOT: CLANCY GILROY  •  CASTING HEART ARROWS", True, (215, 185, 245))
+        self.screen.blit(clancy_lbl, (center_x - clancy_lbl.get_width() // 2, center_y + 48))
 
-        # Instructions Box
-        box_rect = pygame.Rect(75, 260, 650, 220)
-        pygame.draw.rect(self.screen, (15, 18, 35, 230), box_rect, border_radius=10)
-        pygame.draw.rect(self.screen, COLOR_PINK, box_rect, width=2, border_radius=10)
+        # Instructions Card - Calm translucent cosmic slate with rounded corners
+        card_w = 660
+        card_h = 218
+        card_x = (SCREEN_WIDTH - card_w) // 2
+        card_y = 245
 
-        instructions = [
-            ("CONTROLS:", COLOR_CYAN),
-            ("  [ARROW KEYS] or [W, A, S, D] -> Move Clancy across Deep Space", COLOR_WHITE),
-            ("  [SPACEBAR]                   -> Cast Magical Heart Arrows (Ep. 4)", ARROW_HEART_GLOW),
-            ("MISSION OBJECTIVES:", COLOR_CYAN),
-            ("  * Defeat Prince Jam Roll (+100 pts) * Dodge Asteroids (+10 pts)", COLOR_WHITE),
-            ("  * Collect Pairs of Multiverse Shoes (+50 pts) for Clancy's Rack!", COLOR_GOLD),
-            ("  * Enter Multiverse Simulator every 20 levels to Warp to Deeper Space!", COLOR_CYAN)
-        ]
+        card_surf = pygame.Surface((card_w, card_h), pygame.SRCALPHA)
+        pygame.draw.rect(card_surf, (15, 18, 34, 235), (0, 0, card_w, card_h), border_radius=14)
+        pygame.draw.rect(card_surf, (110, 100, 160, 120), (0, 0, card_w, card_h), width=1, border_radius=14)
+        pygame.draw.line(card_surf, (175, 140, 235, 80), (16, 1), (card_w - 16, 1), width=1)
+        pygame.draw.line(card_surf, (60, 70, 105, 100), (30, 106), (card_w - 30, 106), width=1)
+        self.screen.blit(card_surf, (card_x, card_y))
 
-        cur_y = 272
-        for text, color in instructions:
-            line_surf = self.font_body.render(text, True, color)
-            self.screen.blit(line_surf, (95, cur_y))
-            cur_y += 24
+        # Section 1: Controls
+        ctrl_hdr = self.font_body.render("CONTROLS", True, (130, 220, 245))
+        self.screen.blit(ctrl_hdr, (card_x + 32, card_y + 16))
 
-        # 2. Pulsing key press prompt
-        pulse = (pygame.time.get_ticks() // 380) % 2 == 0
-        prompt_col = COLOR_GOLD if pulse else COLOR_WHITE
+        c1_key = self.font_body.render("[WASD] / [ARROWS]", True, COLOR_WHITE)
+        c1_desc = self.font_body.render("Float & navigate deep space", True, (190, 195, 215))
+        self.screen.blit(c1_key, (card_x + 32, card_y + 44))
+        self.screen.blit(c1_desc, (card_x + 230, card_y + 44))
+
+        c2_key = self.font_body.render("[SPACEBAR]", True, ARROW_HEART_GLOW)
+        c2_desc = self.font_body.render("Cast magical Heart Arrows", True, (190, 195, 215))
+        self.screen.blit(c2_key, (card_x + 32, card_y + 72))
+        self.screen.blit(c2_desc, (card_x + 230, card_y + 72))
+
+        # Section 2: Objectives
+        obj_hdr = self.font_body.render("MISSION OBJECTIVES", True, (130, 220, 245))
+        self.screen.blit(obj_hdr, (card_x + 32, card_y + 118))
+
+        o1 = self.font_body.render("• Defeat Prince Jam Roll (+100 pts)  • Dodge Asteroids (+10 pts)", True, (225, 228, 238))
+        o2 = self.font_body.render("• Collect Multiverse Shoes (+50 pts) for Clancy's rack", True, (255, 220, 110))
+        o3 = self.font_body.render("• Enter Multiverse Simulator every 20 levels to warp deeper!", True, (160, 215, 240))
+        self.screen.blit(o1, (card_x + 32, card_y + 144))
+        self.screen.blit(o2, (card_x + 32, card_y + 167))
+        self.screen.blit(o3, (card_x + 32, card_y + 190))
+
+        # 4. Calm Breathing Pulse for Prompt
+        ticks = pygame.time.get_ticks()
+        breathe = (math.sin(ticks * 0.0035) + 1.0) / 2.0
+        r = int(170 + 70 * breathe)
+        g = int(190 + 55 * breathe)
+        b = int(220 + 35 * breathe)
+        prompt_col = (r, g, b)
+
         prompt_surf = self.font_heading.render(">> PRESS ANY KEY TO ENTER SIMULATION <<", True, prompt_col)
-        self.screen.blit(prompt_surf, (SCREEN_WIDTH // 2 - prompt_surf.get_width() // 2, 510))
+        self.screen.blit(prompt_surf, (SCREEN_WIDTH // 2 - prompt_surf.get_width() // 2, 508))
 
     # -----------------------------------------------------------------------
     # 8. END GAME SCREEN
